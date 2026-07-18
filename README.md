@@ -143,6 +143,3 @@ single function with a public function URL; pushes to GitHub deploy
 automatically via `.github/workflows/dotnet.yml` (build → zip →
 `aws lambda update-function-code`, authenticated through the GitHub OIDC
 role).
-
-VATWorksheet itself is deployed as the `VATWorksheet` function, reachable at
-<https://gvck2ppy6ykzsx4mkx75ypixzq0dnzfi.lambda-url.ap-southeast-1.on.aws/>.
