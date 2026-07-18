@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c5018f82-e4d6-42c0-a943-f84583295dca</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.AspNetCore.DataProtection.SSM" Version="4.0.3" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.10.0" />
+    <PackageReference Include="FastEndpoints" Version="8.0.1" />
+    <PackageReference Include="Sentry.AspNetCore" Version="6.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- Builds the React app in client/ straight into wwwroot/ before the
+       .NET build, so `dotnet run`/`dotnet build` always serves the latest
+       client. Skips the (slow) npm install step if node_modules already
+       exists; delete client/node_modules to force a reinstall. -->
+  <Target Name="BuildReactClient" BeforeTargets="BeforeBuild">
+    <Exec Command="npm install" WorkingDirectory="client" Condition="!Exists('client/node_modules')" />
+    <Exec Command="npm run build:wwwroot" WorkingDirectory="client" />
+  </Target>
+
+</Project>

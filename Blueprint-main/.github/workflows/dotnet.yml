@@ -1,0 +1,27 @@
+name: .NET
+
+# Deploys on every push. Before the first deploy, create the Lambda function
+# (and its function URL) with the AwsLambda manager tool, and rename
+# "Blueprint" below to the new project's function name.
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - run: dotnet build --configuration Release --property:Version=1.0.${{ github.run_number }}
+    - run: 7z a -tzip Blueprint.zip ./bin/Release/net10.0/*
+    - uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ap-southeast-1
+        role-to-assume: arn:aws:iam::428708741879:role/GithubOIDC
+    - run: aws lambda update-function-code --region ap-southeast-1 --function-name Blueprint --zip-file fileb://Blueprint.zip --publish
